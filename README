@@ -1,8 +1,8 @@
 This is a mirror of http://www.vim.org/scripts/script.php?script_id=2087
 
 This plugin contains some basic refactoring commands for C/C++.
-For the complexity of C++, instead of really parse the source code, I used 
-regular expression matches. But it works well as I tested. 
+For the complexity of C++, instead of really parse the source code, I used
+regular expression matches. But it works well as I tested.
 
 NOTE: It doesn't work for old style parameter declaratoins! And I admit that it may mess up your code sometime if you occasionally forget the rules. Thanks for the kind man who point out this.
 

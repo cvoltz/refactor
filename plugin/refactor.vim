@@ -4,7 +4,7 @@
 " INTRODUCTION:
 "
 " This plugin contains some basic refactoring commands for C/C++(Java, C#).
-" For the complexity of C++, instead of really parse the source code, I used 
+" For the complexity of C++, instead of really parse the source code, I used
 " regular expression matches. But it works well as I tested.
 "
 " The refactor commands and their default key map currently are:
@@ -21,8 +21,8 @@
 " LIMITATION:
 " 	1. Parameter with default value is not supported
 " 	2. Nested template type are limit to 3 layers, and multiple template
-" 	template parameter is not supported. But you can enable them by modify 
-" 	the variable s:TemplateParameterPattern. 
+" 	template parameter is not supported. But you can enable them by modify
+" 	the variable s:TemplateParameterPattern.
 " 		list<int> 						supported
 " 		list<list<int> > 				supported
 " 		list<list<list<int> > > 		supported
@@ -35,11 +35,13 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " BUGS:
 " 	1. (Fixed) Can not handle 'int a = 0' like statment in local variable to
-" 	parameter, because s:IdentifierPattern can not start with digit.
+" 	   parameter, because s:IdentifierPattern can not start with digit.
 " 	2. (Fixed) Add word boundary to some patterns. (\<\>)
 " 	3. (Fixed) <cWORD> will expand to whole expression in introducing constant.
 " 	Thus, abc3def[>4<] will parse to 3. Fixed by iteration.
 " 	4. (Fixed) Parse error of variable defination with initialization.
+" 	5. (Fixed) DOS EOL terminations cause the plugin to fail to load on
+" 	   Linux.
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -63,7 +65,7 @@ let s:TypeIdentifierPattern 		= '\%(' . s:TypeElementPattern . '\%(' . s:Templat
 let s:MissableSeperatorPattern 		= '\%(\s*\n*\s*\)' "'\s*\n*\s*'
 let s:SeperatorPattern 				= '\%(\s\+\n*\s*\|\n\+\|\s*\n*\s\+\)'
 let s:VariableDeclarationPattern 	= s:TypeIdentifierPattern . s:MissableSeperatorPattern . s:IdentifierPattern . '\%\(\[\d*\]\)*'
-let s:FunctionPerfixPattern 		= '^\s*\%(' . s:TypeIdentifierPattern . s:SeperatorPattern. '\|' . s:IdentifierPattern . '::\)\+' 
+let s:FunctionPerfixPattern 		= '^\s*\%(' . s:TypeIdentifierPattern . s:SeperatorPattern. '\|' . s:IdentifierPattern . '::\)\+'
 let s:ParameterListPattern 			= '(' .  s:MissableSeperatorPattern . '\%(' . s:VariableDeclarationPattern . '\%(\s*,' . s:MissableSeperatorPattern . s:VariableDeclarationPattern . '\)*\)*\s*)'
 let s:FunctionPattern 				= s:FunctionPerfixPattern . s:MissableSeperatorPattern . s:IdentifierPattern . s:MissableSeperatorPattern . s:ParameterListPattern . '[^(){;]*'
 let s:FunctionDeclarationPattern 	= s:FunctionPattern . s:MissableSeperatorPattern . '\%(;\)\@='
@@ -116,13 +118,13 @@ function! ReorderParameters()
 	let originLine = line('.')
 	let originCol = col('.')
 	let parameterList = GetParameterListOfCurrentFunction()
-	if len(parameterList) == 1 
+	if len(parameterList) == 1
 		if parameterList[0] == 'NONE'
 			call confirm('There is no parameter to reorder!')
 		else
 			call confirm('Can not reorder the only parameter!')
 		endif
-		return 
+		return
 	endif
 	if len(parameterList) > 0
 		if len(parameterList) > 10
@@ -139,7 +141,7 @@ function! ReorderParameters()
 		let processed = 0
 		while processed == 0
 			let order = inputdialog(text)
-			if order != ""			
+			if order != ""
 				if order =~ '\D'
 					call confirm('Just input the indexes without seperator, please!')
 					continue
@@ -184,7 +186,7 @@ function! RemoveParameter()
 	let parameterList = GetParameterListOfCurrentFunction()
 	if len(parameterList) == 1 && parameterList[0] == 'NONE'
 		call confirm('There is no parameter to remove!')
-		return 
+		return
 	endif
 
 	if len(parameterList) > 0
@@ -209,7 +211,7 @@ function! RemoveParameter()
 					if startCol >= 0
 						let text = strpart(text, 0, startCol) . strpart(text, startCol + strlen(matched))
 						call setline('.', text)
-					endif				
+					endif
 				endif
 			endif
 		endif
@@ -233,7 +235,7 @@ function! RenameVariable()
 		let startLine = line('.')
 		exec "normal! %"
 		let stopLine = line('.')
-		exec startLine . ',' . stopLine . ':s/\<' . variableName . '\>/'. newName .'/g'	
+		exec startLine . ',' . stopLine . ':s/\<' . variableName . '\>/'. newName .'/g'
 	endif
 	call cursor(originRow, originCol)
 endfunction
@@ -313,7 +315,7 @@ function! ExtractMethod() range
 			call GotoBeginingBracketOfCurrentFunction()
 			exec "normal! %"
 			exec "normal! 2o\ei//\e78a-\eo\eccvoid ". scopeIdentifier . "::" . methodName . "(\e"
-		endif		
+		endif
 		let idx = 0
 		let parameterCount = 0
 		while idx < len(variableList)
@@ -352,12 +354,12 @@ function! ExtractMethod() range
 				endif
 				let idx = idx + 1
 			endwhile
-			exec "normal! a);\e==" 
+			exec "normal! a);\e=="
 		endif
 	endif
 endfunction
 
-function! MoveToNextVariable(endLine) 
+function! MoveToNextVariable(endLine)
 	let identifier = ""
 	while search('\([)]\s*\)\@<!' . s:IdentifierPattern . '\(\s*\([(]\|::\|\(\s*' . s:IdentifierPattern . '\)\)\)\@!', 'W', a:endLine) > 0
 		let identifier = expand('<cword>')
@@ -380,11 +382,11 @@ function! GetCurrentVariableType(topestLine)
 	call GotoBeginingBracketOfCurrentFunction()
 	exec "normal! ?(\r"
 	let stopRow = line('.')
-	if a:topestLine > stopRow 
+	if a:topestLine > stopRow
 		let stopRow = a:topestLine
 	endif
 	call cursor(startRow, 1000)
-	
+
 
 	let DeclarationPattern = s:TypeIdentifierPattern . '\s*\%(' . s:IdentifierPattern . '[^()]*,\s*\)*\<' . variableName . '\>\%(\[\d*\]\)*'
 	while search(DeclarationPattern, "bW", stopRow) > 0
@@ -425,7 +427,7 @@ endfunction
 function! GotoBeginingBracketOfCurrentFunction()
 	if search(s:FunctionPattern, 'bW') > 0
 		if search('{', 'W') <= 0
-			exec 'normal! [[' 
+			exec 'normal! [['
 		endif
 	endif
 endfunction
@@ -455,8 +457,8 @@ function! GetParameterListOfCurrentFunction()
 		if emptyPair >= 0 && emptyPair <= startCol + 2
 			call add(parameterList, 'NONE')
 			return parameterList
-		endif		
-		
+		endif
+
 		let start = startCol - 1
 		while 1
 			let parameter = matchstr(text, s:VariableDeclarationPattern, start)
