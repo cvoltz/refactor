@@ -3,14 +3,14 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " INTRODUCTION:
 "
-" This plugin contains some basic refactoring commands for C/C++(Java, C#).
-" For the complexity of C++, instead of really parse the source code, I used
-" regular expression matches. But it works well as I tested.
+" This plugin contains some basic refactoring commands for C and C++.  Due to
+" the complexity of C++, instead of actually parsing the source code, I used
+" regular expression matching--but, based on my testing, it works well.
 "
-" The refactor commands and their default key map currently are:
+" The refactor commands and their default key mappings are:
 " 	1. <A-r>e 	Extract method
 " 	2. <A-r>p 	local variable to Parameter
-" 	3. <A-r>r 	Rename LOCAL variable
+" 	3. <A-r>r 	Rename local variable
 " 	4. <A-r>d 	Delete parameter
 " 	5. <A-r>o 	reOrder parameters
 " 	6. <A-r>c 	introduce Constant
@@ -18,19 +18,19 @@
 " BiDongliang 	bidongliang_2000@126.com 2007/12/4
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" LIMITATION:
-" 	1. Parameter with default value is not supported
-" 	2. Nested template type are limit to 3 layers, and multiple template
-" 	template parameter is not supported. But you can enable them by modify
-" 	the variable s:TemplateParameterPattern.
+" LIMITATIONS:
+" 	1. Parameters with a default value are not supported
+" 	2. Nested template types are limited to 3 layers, and multiple template
+" 	   parameters are not supported; but, you can enable them by modifying
+" 	   the variable s:TemplateParameterPattern.
 " 		list<int> 						supported
 " 		list<list<int> > 				supported
 " 		list<list<list<int> > > 		supported
 " 		list<pair<int, int> > 			supported
-" 		list<list<int>, list<int> > 	unsuported
-" 	3. Rename refactor can only perform on local variables.
-" 	4. Register z is used when extract method.
-" 	5. 10 parameter supported at most.
+" 		list<list<int>, list<int> > 	unsupported
+" 	3. Rename refactor only works on local variables.
+" 	4. Register z is used when extracting a method.
+" 	5. Functions with more than 10 parameters are not supported.
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " BUGS:
@@ -38,7 +38,7 @@
 " 	   parameter, because s:IdentifierPattern can not start with digit.
 " 	2. (Fixed) Add word boundary to some patterns. (\<\>)
 " 	3. (Fixed) <cWORD> will expand to whole expression in introducing constant.
-" 	Thus, abc3def[>4<] will parse to 3. Fixed by iteration.
+" 	   Thus, abc3def[>4<] will parse to 3. Fixed by iteration.
 " 	4. (Fixed) Parse error of variable defination with initialization.
 " 	5. (Fixed) DOS EOL terminations cause the plugin to fail to load on
 " 	   Linux.

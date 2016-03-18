@@ -1,16 +1,18 @@
 This is a mirror of http://www.vim.org/scripts/script.php?script_id=2087
 
-This plugin contains some basic refactoring commands for C/C++.
-For the complexity of C++, instead of really parse the source code, I used
-regular expression matches. But it works well as I tested.
+This plugin contains some basic refactoring commands for C and C++.  Due to the
+complexity of C++, instead of actually parsing the source code, I used regular
+expression matching--but, based on my testing, it works well.
 
-NOTE: It doesn't work for old style parameter declaratoins! And I admit that it may mess up your code sometime if you occasionally forget the rules. Thanks for the kind man who point out this.
+NOTE: It doesn't work for old-style parameter declarations! I admit that it may
+mess up your code sometime if you occasionally forget the rules. Thanks to the
+kind man who pointed this out.
 
 
-The refactor commands and their default key map currently are:
+The refactor commands and their default key mappings are:
 	1. <A-r>e 	Extract method
 	2. <A-r>p 	local variable to Parameter
-	3. <A-r>r 	 Rename local variable
+	3. <A-r>r 	Rename local variable
 	4. <A-r>d 	Delete parameter
 	5. <A-r>o 	reOrder parameters
 	6. <A-r>c 	introduce Constant
