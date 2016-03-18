@@ -10,11 +10,11 @@ kind man who pointed this out.
 
 
 The refactor commands and their default key mappings are:
-	1. <A-r>e 	Extract method
-	2. <A-r>p 	local variable to Parameter
-	3. <A-r>r 	Rename local variable
-	4. <A-r>d 	Delete parameter
-	5. <A-r>o 	reOrder parameters
-	6. <A-r>c 	introduce Constant
+    1. <A-r>e   Extract method
+    2. <A-r>p   local variable to Parameter
+    3. <A-r>r   Rename local variable
+    4. <A-r>d   Delete parameter
+    5. <A-r>o   reOrder parameters
+    6. <A-r>c   introduce Constant
 
-BiDongliang 	bidongliang_2000@126.com 2007/12/4
+BiDongliang     bidongliang_2000@126.com 2007/12/4
